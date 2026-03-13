@@ -5,8 +5,6 @@ namespace BarberLegacy.Api.Entities
     public class Barber
     {
         public int Id { get; set; } // PK
-
-        [MaxLength(200)]
         public required string UserId { get; set; } // FK
         public int BarberShopId { get; set; } // FK
         [MaxLength(500)]

@@ -1,15 +1,14 @@
 ﻿using BarberLegacy.Api.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BarberLegacy.Api.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
-
-        public DbSet<User> Users { get; set; }
         public DbSet<Client> Clients { get; set; }
         public DbSet<Barber> Barbers { get; set; }
         public DbSet<BarberShop> BarberShops { get; set; }
@@ -20,26 +19,6 @@ namespace BarberLegacy.Api.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            // User configuration
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.Email).IsUnique();
-
-                entity.HasOne(u => u.Client)
-                    .WithOne(c => c.User)
-                    .HasForeignKey<Client>(c => c.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(u => u.Barber)
-                    .WithOne(b => b.User)
-                    .HasForeignKey<Barber>(b => b.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
-
-                entity.Property(u => u.CreatedAt)
-                    .HasDefaultValueSql("GETDATE()");
-            });
 
             // Client configuration
             modelBuilder.Entity<Client>(entity =>

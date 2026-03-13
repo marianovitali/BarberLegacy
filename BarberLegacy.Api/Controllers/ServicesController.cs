@@ -6,7 +6,7 @@ namespace BarberLegacy.Api.Controllers
 {
     [ApiController]
     [Route("api/services")]
-    public class ServicesController : Controller
+    public class ServicesController : ControllerBase
     {
         private readonly IServiceService _serviceService;
 
