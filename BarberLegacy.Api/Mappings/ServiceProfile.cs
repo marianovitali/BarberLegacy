@@ -17,6 +17,8 @@ namespace BarberLegacy.Api.Mappings
 
             // EDIT
             CreateMap<ServiceUpdateDto, Service>();
+
+            
         }
     }
 }

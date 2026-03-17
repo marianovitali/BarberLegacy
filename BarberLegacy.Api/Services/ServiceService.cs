@@ -24,7 +24,9 @@ namespace BarberLegacy.Api.Services
 
             var savedService = await _repository.AddAsync(serviceEntity);
 
-            return _mapper.Map<ServiceResponseDto>(savedService);
+            var completeService = await _repository.GetByIdAsync(savedService.Id);
+
+            return _mapper.Map<ServiceResponseDto>(completeService);
 
         }
 

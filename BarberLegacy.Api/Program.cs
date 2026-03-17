@@ -55,6 +55,10 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IBarberRepository, BarberRepository>();
+builder.Services.AddScoped<IBarberService, BarberService>();
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
 var app = builder.Build();
 
