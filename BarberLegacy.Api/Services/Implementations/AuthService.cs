@@ -1,36 +1,68 @@
-﻿using BarberLegacy.Api.DTOs.Auth;
+﻿using BarberLegacy.Api.Data;
+using BarberLegacy.Api.DTOs.Auth;
 using BarberLegacy.Api.Entities;
+using BarberLegacy.Api.Repositories.Interfaces;
+using BarberLegacy.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace BarberLegacy.Api.Services
+namespace BarberLegacy.Api.Services.Implementations
 {
     public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
-        public AuthService(UserManager<User> userManager, IConfiguration configuration)
+        private readonly IClientRepository _clientRepository;
+        private readonly ApplicationDbContext _context;
+        public AuthService(UserManager<User> userManager, IConfiguration configuration,
+            IClientRepository clientRepository, ApplicationDbContext context)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _clientRepository = clientRepository;
+            _context = context;
         }
 
         public async Task<IdentityResult> RegisterAsync(RegisterDto dto)
         {
-            var user = new User
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                UserName = dto.Email,
-                Email = dto.Email,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
+                var user = new User
+                {
+                    UserName = dto.Email,
+                    Email = dto.Email,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
 
-            };
+                };
 
-            return await _userManager.CreateAsync(user, dto.Password);
+                var result = await _userManager.CreateAsync(user, dto.Password);
+
+                if (result.Succeeded)
+                {
+                    var client = new Client
+                    {
+                        UserId = user.Id,
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    };
+
+                    await _clientRepository.AddAsync(client);
+                    await transaction.CommitAsync();
+                }
+
+                return result;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
         }
 
         public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)

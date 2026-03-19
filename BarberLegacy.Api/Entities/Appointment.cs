@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BarberLegacy.Api.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BarberLegacy.Api.Entities
 {
@@ -8,13 +9,13 @@ namespace BarberLegacy.Api.Entities
         public int ClientId { get; set; } // FK
         public int BarberId { get; set; } // FK
         public int ServiceId { get; set; } // FK
+
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-
-        [MaxLength(50)]
-        public required string Status { get; set; } = "Pending"; // Pending, Confirmed, Completed, Cancelled
-        public DateTime CreatedAt { get; set; } 
+        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
+        public DateTime CreatedAt { get; set; }
+        public bool IsActive { get; set; } = true;
 
         // Navigation properties
         public Client Client { get; set; } = null!;

@@ -20,7 +20,7 @@ namespace BarberLegacy.Api.DTOs.Services
         public decimal Price { get; set; }
 
         [Required]
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } 
 
     }
 }

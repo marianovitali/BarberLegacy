@@ -1,7 +1,9 @@
 using BarberLegacy.Api.Data;
 using BarberLegacy.Api.Entities;
-using BarberLegacy.Api.Repositories;
-using BarberLegacy.Api.Services;
+using BarberLegacy.Api.Repositories.Implementations;
+using BarberLegacy.Api.Repositories.Interfaces;
+using BarberLegacy.Api.Services.Implementations;
+using BarberLegacy.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +61,10 @@ builder.Services.AddScoped<IBarberRepository, BarberRepository>();
 builder.Services.AddScoped<IBarberService, BarberService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IBarberShopRepository, BarberShopRepository>();
+builder.Services.AddScoped<IBarberShopService, BarberShopService>();
+builder.Services.AddScoped<IBarberScheduleRepository, BarberScheduleRepository>();
+builder.Services.AddScoped<IBarberScheduleService, BarberScheduleService>();
 
 var app = builder.Build();
 

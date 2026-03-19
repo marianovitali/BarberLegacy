@@ -1,6 +1,6 @@
 ﻿using BarberLegacy.Api.Entities;
 
-namespace BarberLegacy.Api.Repositories
+namespace BarberLegacy.Api.Repositories.Interfaces
 {
     public interface IClientRepository
     {

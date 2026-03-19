@@ -1,7 +1,7 @@
 ﻿using BarberLegacy.Api.DTOs.Barber;
 using BarberLegacy.Api.Entities;
 
-namespace BarberLegacy.Api.Services
+namespace BarberLegacy.Api.Services.Interfaces
 {
     public interface IBarberService
     {

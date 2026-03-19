@@ -1,5 +1,5 @@
 ﻿using BarberLegacy.Api.DTOs.Services;
-using BarberLegacy.Api.Services;
+using BarberLegacy.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarberLegacy.Api.Controllers

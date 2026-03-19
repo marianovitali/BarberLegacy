@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using BarberLegacy.Api.DTOs.Services;
 using BarberLegacy.Api.Entities;
-using BarberLegacy.Api.Repositories;
+using BarberLegacy.Api.Repositories.Interfaces;
+using BarberLegacy.Api.Services.Interfaces;
 
-namespace BarberLegacy.Api.Services
+namespace BarberLegacy.Api.Services.Implementations
 {
     public class ServiceService : IServiceService
     {
@@ -53,7 +54,6 @@ namespace BarberLegacy.Api.Services
             var service = await _repository.GetByIdAsync(id);
 
             if (service == null) return null;
-
 
             return _mapper.Map<ServiceResponseDto>(service);
         }

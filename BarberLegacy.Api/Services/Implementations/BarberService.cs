@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using BarberLegacy.Api.DTOs.Barber;
 using BarberLegacy.Api.Entities;
-using BarberLegacy.Api.Repositories;
+using BarberLegacy.Api.Repositories.Interfaces;
+using BarberLegacy.Api.Services.Interfaces;
 
-namespace BarberLegacy.Api.Services
+namespace BarberLegacy.Api.Services.Implementations
 {
     public class BarberService : IBarberService
     {

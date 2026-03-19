@@ -7,12 +7,10 @@ namespace BarberLegacy.Api.DTOs.Barber
         public int Id { get; set; } // PK
         public required string UserId { get; set; } // FK
         public int BarberShopId { get; set; } // FK
-        [MaxLength(500)]
         public string? Bio { get; set; }
-        [MaxLength(500)]
         public string? PhotoUrl { get; set; }
-        public bool IsActive { get; set; } = true;
-        public string FirstName { get; set; } = default!;
-        public string LastName { get; set; } = default!;
+        public bool IsActive { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
     }
 }

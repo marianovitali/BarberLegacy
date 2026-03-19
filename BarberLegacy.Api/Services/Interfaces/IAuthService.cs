@@ -1,7 +1,7 @@
 ﻿using BarberLegacy.Api.DTOs.Auth;
 using Microsoft.AspNetCore.Identity;
 
-namespace BarberLegacy.Api.Services
+namespace BarberLegacy.Api.Services.Interfaces
 {
     public interface IAuthService
     {

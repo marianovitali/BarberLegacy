@@ -1,8 +1,9 @@
 ﻿using BarberLegacy.Api.Data;
 using BarberLegacy.Api.Entities;
+using BarberLegacy.Api.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BarberLegacy.Api.Repositories
+namespace BarberLegacy.Api.Repositories.Implementations
 {
     public class BarberRepository : IBarberRepository
     {
