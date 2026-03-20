@@ -8,12 +8,12 @@ using Microsoft.Identity.Client;
 namespace BarberLegacy.Api.Controllers
 {
     [ApiController]
-    [Route("api/barberschedule")]
-    public class BarberScheduleController : ControllerBase
+    [Route("api/barberschedules")]
+    public class BarberSchedulesController : ControllerBase
     {
         private readonly IBarberScheduleService _barberScheduleService;
 
-        public BarberScheduleController(IBarberScheduleService barberScheduleService)
+        public BarberSchedulesController(IBarberScheduleService barberScheduleService)
         {
             _barberScheduleService = barberScheduleService;
         }

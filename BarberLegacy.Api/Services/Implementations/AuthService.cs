@@ -89,21 +89,20 @@ namespace BarberLegacy.Api.Services.Implementations
 
         private string GenerateJwtToken(User user, DateTime expiration)
         {
-            // A. Los "Claims" (Afirmaciones): Es la información pública que viaja dentro del token
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Id), // El ID del usuario
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id), 
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Un ID único para este token
-            // Acá en el futuro podés agregar roles: new Claim(ClaimTypes.Role, "Admin")
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
+
         };
 
-            // B. La Firma Digital: Traemos la clave secreta de tu appsettings.json
+
             var secretKey = _configuration["Jwt:Key"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // C. El armado del Token
+
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
@@ -112,7 +111,6 @@ namespace BarberLegacy.Api.Services.Implementations
                 signingCredentials: creds
             );
 
-            // D. Lo convertimos a string (el choclazo de texto final)
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

@@ -65,6 +65,8 @@ builder.Services.AddScoped<IBarberShopRepository, BarberShopRepository>();
 builder.Services.AddScoped<IBarberShopService, BarberShopService>();
 builder.Services.AddScoped<IBarberScheduleRepository, BarberScheduleRepository>();
 builder.Services.AddScoped<IBarberScheduleService, BarberScheduleService>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
 var app = builder.Build();
 

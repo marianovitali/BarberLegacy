@@ -6,11 +6,11 @@ namespace BarberLegacy.Api.Controllers
 {
     [ApiController]
     [Route("api/barbershops")]
-    public class BarberShopController : ControllerBase
+    public class BarberShopsController : ControllerBase
     {
         private readonly IBarberShopService _barberShopService;
 
-        public BarberShopController(IBarberShopService barberShopService)
+        public BarberShopsController(IBarberShopService barberShopService)
         {
             _barberShopService = barberShopService;
         }
