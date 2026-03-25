@@ -76,6 +76,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+using (var scope = app.Services.CreateScope())
+{
+    await RoleSeeder.SeedRolesAsync(scope.ServiceProvider);
+}
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

@@ -3,6 +3,7 @@ using BarberLegacy.Api.DTOs.Barber;
 using BarberLegacy.Api.Entities;
 using BarberLegacy.Api.Repositories.Interfaces;
 using BarberLegacy.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace BarberLegacy.Api.Services.Implementations
 {
@@ -10,15 +11,28 @@ namespace BarberLegacy.Api.Services.Implementations
     {
         private readonly IBarberRepository _repository;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
-        public BarberService(IBarberRepository repository, IMapper mapper)
+        public BarberService(IBarberRepository repository, IMapper mapper, UserManager<User> userManager)
         {
             _repository = repository;
             _mapper = mapper;
+            _userManager = userManager;
+            _userManager = userManager;
         }
 
         public async Task<BarberResponseDto> CreateAsync(BarberCreateDto dto)
         {
+            var user = await _userManager.FindByIdAsync(dto.UserId);
+
+            if (user == null)
+            {
+                throw new Exception("El usuario no existe en el sistema.");
+            }
+
+            await _userManager.RemoveFromRoleAsync(user, "Client");
+            await _userManager.AddToRoleAsync(user, "Barber");
+
             var barberEntity = _mapper.Map<Barber>(dto);
 
             barberEntity.IsActive = true;

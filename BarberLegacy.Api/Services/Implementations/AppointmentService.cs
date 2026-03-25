@@ -26,24 +26,18 @@ namespace BarberLegacy.Api.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<AppointmentResponseDto?> CreateAsync(AppointmentCreateDto dto)
+        public async Task<AppointmentResponseDto> CreateAsync(AppointmentCreateDto dto)
         {
-            var serviceToApply = await _serviceRepository.GetByIdAsync(dto.ServiceId);
+            if (dto.Date.Date < DateTime.Today || (dto.Date.Date == DateTime.Today && dto.StartTime < DateTime.Now.TimeOfDay))
+                return null!;
 
-            if (serviceToApply == null)
-            {
-                return null;
-            }
+            var serviceToApply = await _serviceRepository.GetByIdAsync(dto.ServiceId);
+            if (serviceToApply == null) return null!;
+
+            if (!await ValidateClientCanBookAsync(dto.ClientId)) return null!;
 
             var calculatedEndTime = dto.StartTime.Add(TimeSpan.FromMinutes(serviceToApply.DurationMinutes));
-
-
-            bool isValid = await ValidateAppointmentRulesAsync(dto.BarberId, dto.Date, dto.StartTime, calculatedEndTime);
-
-            if (!isValid)
-            {
-                return null; 
-            }
+            if (!await ValidateAppointmentRulesAsync(dto.BarberId, dto.Date, dto.StartTime, calculatedEndTime)) return null;
 
             var appointmentEntity = _mapper.Map<Appointment>(dto);
             appointmentEntity.EndTime = calculatedEndTime;
@@ -51,7 +45,6 @@ namespace BarberLegacy.Api.Services.Implementations
             appointmentEntity.CreatedAt = DateTime.Now;
 
             await _appointmentRepository.AddAsync(appointmentEntity);
-
             var completeAppointment = await _appointmentRepository.GetByIdAsync(appointmentEntity.Id);
 
             return _mapper.Map<AppointmentResponseDto>(completeAppointment);
@@ -163,6 +156,18 @@ namespace BarberLegacy.Api.Services.Implementations
             }
 
             return true;
+        }
+
+        private async Task<bool> ValidateClientCanBookAsync(int clientId)
+        {
+            var clientAppointments = await _appointmentRepository.GetAllClientAppointmentsAsync(clientId);
+
+            var activeFutureAppointments = clientAppointments.Count(a =>
+                a.Date >= DateTime.Today &&
+                (a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Confirmed) &&
+                a.IsActive);
+
+            return activeFutureAppointments < 3; 
         }
     }
 }

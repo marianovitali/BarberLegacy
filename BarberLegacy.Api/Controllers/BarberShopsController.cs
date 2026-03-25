@@ -1,5 +1,6 @@
 ﻿using BarberLegacy.Api.DTOs.BarberShop;
 using BarberLegacy.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BarberLegacy.Api.Controllers
@@ -34,6 +35,7 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<ActionResult<BarberShopResponseDto>> Create([FromBody] BarberShopCreateDto barberShop)
         {
             var createdBarberShop = await _barberShopService.CreateAsync(barberShop);
@@ -42,6 +44,7 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<ActionResult<BarberShopResponseDto>> Update([FromBody] BarberShopUpdateDto barberShop, int id)
         {
             var updatedBarberShop = await _barberShopService.UpdateAsync(id, barberShop);
@@ -55,6 +58,7 @@ namespace BarberLegacy.Api.Controllers
 
         }
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<IActionResult> Delete(int id)
         {
             var delete = await _barberShopService.DeleteAsync(id);

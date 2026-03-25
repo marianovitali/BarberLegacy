@@ -2,6 +2,7 @@
 using BarberLegacy.Api.DTOs.BarberSchedule;
 using BarberLegacy.Api.Entities;
 using BarberLegacy.Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
@@ -42,6 +43,7 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<ActionResult<BarberScheduleResponseDto>> Create([FromBody] BarberScheduleCreateDto schedule)
         {
             var createdSchedule = await _barberScheduleService.CreateAsync(schedule);
@@ -50,6 +52,7 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<ActionResult<BarberScheduleResponseDto>> Update([FromBody] BarberScheduleUpdateDto schedule, int id)
         {
             var updatedSchedule = await _barberScheduleService.UpdateAsync(id, schedule);
@@ -64,6 +67,7 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin, Barber")]
         public async Task<IActionResult> Delete(int id)
         {
             var delete = await _barberScheduleService.DeleteAsync(id);

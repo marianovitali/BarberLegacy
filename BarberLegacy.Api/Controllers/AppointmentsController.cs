@@ -1,8 +1,10 @@
 ﻿using BarberLegacy.Api.DTOs.Appointment;
 using BarberLegacy.Api.Entities;
+using BarberLegacy.Api.Repositories.Interfaces;
 using BarberLegacy.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BarberLegacy.Api.Controllers
 {
@@ -12,6 +14,7 @@ namespace BarberLegacy.Api.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
+        private readonly IClientRepository _clientRepository;
 
         public AppointmentsController(IAppointmentService appointmentService)
         {
@@ -31,6 +34,11 @@ namespace BarberLegacy.Api.Controllers
         [HttpGet("client/{clientId}")]
         public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAppointmentsByClient(int clientId)
         {
+            if (!await IsUserOwnerOfClientAsync(clientId))
+            {
+                return Forbid();
+            }
+
             var appointments = await _appointmentService.GetAllClientAsync(clientId);
             return Ok(appointments);
         }
@@ -62,6 +70,7 @@ namespace BarberLegacy.Api.Controllers
             return Ok(appointment);
         }
 
+        [Authorize(Roles = "Admin, Barber")]
         [HttpPut("{id}")]
         public async Task<ActionResult<AppointmentResponseDto>> UpdateAppointment(int id, AppointmentUpdateDto dto)
         {
@@ -75,8 +84,8 @@ namespace BarberLegacy.Api.Controllers
             return Ok(updatedAppointment);
         }
 
+        [Authorize(Roles = "Admin, Barber")]
         [HttpDelete("{id}")]
-
         public async Task<IActionResult> DeleteAppointment(int id)
         {
             var delete = await _appointmentService.DeleteAsync(id);
@@ -87,6 +96,21 @@ namespace BarberLegacy.Api.Controllers
             }
 
             return NoContent();
+        }
+
+        private async Task<bool> IsUserOwnerOfClientAsync(int clientId)
+        {
+            // 1. Sacamos el DNI del token del usuario que hizo la petición
+            var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Si por algún motivo no hay token (no debería pasar por el [Authorize], pero por las dudas)
+            if (string.IsNullOrEmpty(loggedInUserId)) return false;
+
+            // 2. Buscamos el cliente en la base de datos
+            var client = await _clientRepository.GetByIdAsync(clientId);
+
+            // 3. Devolvemos true si existe y si los IDs coinciden. Si no, false.
+            return client != null && client.UserId == loggedInUserId;
         }
     }
 }

@@ -52,6 +52,7 @@ namespace BarberLegacy.Api.Services.Implementations
                         IsActive = true
                     };
 
+                    await _userManager.AddToRoleAsync(user, "Client");
                     await _clientRepository.AddAsync(client);
                     await transaction.CommitAsync();
                 }
@@ -74,8 +75,8 @@ namespace BarberLegacy.Api.Services.Implementations
                 return null;
             }
 
-            var expirationDate = DateTime.UtcNow.AddHours(2);
-            var token = GenerateJwtToken(user, expirationDate);
+            var expirationDate = DateTime.UtcNow.AddHours(24);
+            var token = await GenerateJwtToken(user, expirationDate);
 
             return new AuthResponseDto
             {
@@ -87,9 +88,9 @@ namespace BarberLegacy.Api.Services.Implementations
             };
         }
 
-        private string GenerateJwtToken(User user, DateTime expiration)
+        private async Task<string> GenerateJwtToken(User user, DateTime expiration)
         {
-            var claims = new[]
+            var claims = new List<Claim>
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id), 
             new Claim(JwtRegisteredClaimNames.Email, user.Email!),
@@ -101,6 +102,12 @@ namespace BarberLegacy.Api.Services.Implementations
             var secretKey = _configuration["Jwt:Key"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
 
             var token = new JwtSecurityToken(
