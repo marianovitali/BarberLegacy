@@ -75,7 +75,7 @@ namespace BarberLegacy.Api.Services.Implementations
                 return null;
             }
 
-            var expirationDate = DateTime.UtcNow.AddHours(24);
+            var expirationDate = DateTime.UtcNow.AddHours(730);
             var token = await GenerateJwtToken(user, expirationDate);
 
             return new AuthResponseDto

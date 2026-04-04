@@ -22,14 +22,18 @@ namespace BarberLegacy.Api.Repositories.Implementations
             return client;
         }
 
-        public async Task<IEnumerable<Client>> GetAllAsync()
+        public async Task<(IEnumerable<Client> Clients, int TotalCount)> GetAllAsync(int pageNumber, int pageSize)
         {
-            var clients = await _context.Clients
-                .Where(x => x.IsActive)
-                .Include(x => x.User)
-                .ToListAsync();
+            var totalCount = await _context.Clients.CountAsync(x => x.IsActive);
 
-            return clients;
+            var clients = await _context.Clients
+                    .Where(x => x.IsActive)
+                    .Include(x => x.User)
+                    .Skip((pageNumber - 1) * pageSize) 
+                    .Take(pageSize)                    
+                    .ToListAsync();
+
+            return (clients, totalCount);
         }
 
         public async Task<Client?> GetByIdAsync(int id)

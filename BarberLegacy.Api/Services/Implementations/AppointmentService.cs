@@ -37,7 +37,7 @@ namespace BarberLegacy.Api.Services.Implementations
             if (!await ValidateClientCanBookAsync(dto.ClientId)) return null!;
 
             var calculatedEndTime = dto.StartTime.Add(TimeSpan.FromMinutes(serviceToApply.DurationMinutes));
-            if (!await ValidateAppointmentRulesAsync(dto.BarberId, dto.Date, dto.StartTime, calculatedEndTime)) return null;
+            if (!await ValidateAppointmentRulesAsync(dto.BarberId, dto.Date, dto.StartTime, calculatedEndTime)) return null!;
 
             var appointmentEntity = _mapper.Map<Appointment>(dto);
             appointmentEntity.EndTime = calculatedEndTime;
@@ -82,6 +82,38 @@ namespace BarberLegacy.Api.Services.Implementations
             var clientAppointment = await _appointmentRepository.GetAllClientAppointmentsAsync(clientId);
 
             return _mapper.Map<IEnumerable<AppointmentResponseDto>>(clientAppointment);
+        }
+
+        public async Task<IEnumerable<TimeSpan>> GetAvailableSlotsAsync(int barberId, DateTime date) //ACAA!!
+        {
+            var availableSlots = new List<TimeSpan>();
+
+            // complete agenda
+            var allSchedules = await _barberScheduleRepository.GetByBarberIdAsync(barberId);
+
+            // just 1 day
+            var schedule = allSchedules.FirstOrDefault(s => s.DayOfWeek == date.DayOfWeek);
+
+            if (schedule == null) return availableSlots;
+
+            // cuales ocupados?
+            var bookedAppointments = await _appointmentRepository.GetAllBarberAppointmentsByDateAsync(barberId, date);
+
+            TimeSpan slotDuration = TimeSpan.FromHours(1);
+            TimeSpan currentTime = schedule.StartTime;
+
+            while (currentTime.Add(slotDuration) <= schedule.EndTime)
+            {
+                bool isOccupied = bookedAppointments.Any(app => app.StartTime == currentTime);
+
+                if (!isOccupied)
+                {
+                    availableSlots.Add(currentTime);
+                }
+                currentTime = currentTime.Add(slotDuration);
+            }
+
+            return availableSlots;
         }
 
         public async Task<AppointmentResponseDto?> GetByIdAsync(int id)

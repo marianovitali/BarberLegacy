@@ -1,5 +1,6 @@
 ﻿using BarberLegacy.Api.DTOs.Appointment;
 using BarberLegacy.Api.Entities;
+using BarberLegacy.Api.Repositories.Implementations;
 using BarberLegacy.Api.Repositories.Interfaces;
 using BarberLegacy.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -11,16 +12,21 @@ namespace BarberLegacy.Api.Controllers
     [ApiController]
     [Route("api/appointments")]
     [Authorize]
+    [Tags("Appointments")]
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
         private readonly IClientRepository _clientRepository;
 
-        public AppointmentsController(IAppointmentService appointmentService)
+        public AppointmentsController(IAppointmentService appointmentService, IClientRepository clientRepository)
         {
             _appointmentService = appointmentService;
+            _clientRepository = clientRepository;
         }
         [HttpGet("{id}")]
+        [EndpointSummary("Obtiene un turno específico por su ID")]
+        [ProducesResponseType(typeof(AppointmentResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<AppointmentResponseDto>> GetAppointment(int id)
         {
             var appointment = await _appointmentService.GetByIdAsync(id);
@@ -32,6 +38,11 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpGet("client/{clientId}")]
+        [EndpointSummary("Obtiene todos los turnos de un cliente")]
+        [EndpointDescription("Solo el dueño de la cuenta o un administrador pueden ver estos turnos.")]
+        [ProducesResponseType(typeof(IEnumerable<AppointmentResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+
         public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAppointmentsByClient(int clientId)
         {
             if (!await IsUserOwnerOfClientAsync(clientId))
@@ -43,7 +54,12 @@ namespace BarberLegacy.Api.Controllers
             return Ok(appointments);
         }
 
+        [Authorize(Roles = "Admin, Barber")]
         [HttpGet("barber/{barberId}")]
+        [EndpointSummary("Obtiene la agenda completa de un barbero")]
+        [ProducesResponseType(typeof(IEnumerable<AppointmentResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAppointmentsByBarber(int barberId)
         {
             var appointments = await _appointmentService.GetAllBarberAsync(barberId);
@@ -51,13 +67,31 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpGet("barber/{barberId}/date/{date}")]
+        [EndpointSummary("Obtiene los turnos de un barbero para una fecha específica")]
+        [ProducesResponseType(typeof(IEnumerable<AppointmentResponseDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<AppointmentResponseDto>>> GetAppointmentByBarberAndDate(int barberId, DateTime date)
         {
             var appointments = await _appointmentService.GetAllBarberByDateAsync(barberId, date);
             return Ok(appointments);
         }
 
+        [HttpGet("barber/{barberId}/availability")]
+        [AllowAnonymous]
+        [EndpointSummary("Consulta los horarios disponibles de un barbero")]
+        [EndpointDescription("Devuelve una lista de horas (TimeSpan) en las que el barbero está libre para la fecha indicada.")]
+        [ProducesResponseType(typeof(IEnumerable<TimeSpan>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<TimeSpan>>> GetAvailableSlots(int barberId, [FromQuery] DateTime date)
+        {
+            var availableSlots = await _appointmentService.GetAvailableSlotsAsync(barberId, date);
+
+            return Ok(availableSlots);
+        }
+
         [HttpPost]
+        [EndpointSummary("Reserva un nuevo turno")]
+        [EndpointDescription("Valida que el local esté abierto y que el barbero no tenga otro turno en ese horario.")]
+        [ProducesResponseType(typeof(AppointmentResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<AppointmentResponseDto>> Create(AppointmentCreateDto dto)
         {
             var appointment = await _appointmentService.CreateAsync(dto);
@@ -72,6 +106,10 @@ namespace BarberLegacy.Api.Controllers
 
         [Authorize(Roles = "Admin, Barber")]
         [HttpPut("{id}")]
+        [EndpointSummary("Actualiza o reprograma un turno")]
+        [ProducesResponseType(typeof(AppointmentResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<ActionResult<AppointmentResponseDto>> UpdateAppointment(int id, AppointmentUpdateDto dto)
         {
             var updatedAppointment = await _appointmentService.UpdateAsync(dto, id);
@@ -86,6 +124,10 @@ namespace BarberLegacy.Api.Controllers
 
         [Authorize(Roles = "Admin, Barber")]
         [HttpDelete("{id}")]
+        [EndpointSummary("Cancela un turno existente")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
             var delete = await _appointmentService.DeleteAsync(id);

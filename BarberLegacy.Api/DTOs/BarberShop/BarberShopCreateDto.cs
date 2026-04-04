@@ -15,6 +15,7 @@ namespace BarberLegacy.Api.DTOs.BarberShop
         public required string Address { get; set; }
 
         [MaxLength(20)]
+        [Phone(ErrorMessage = "El formato del teléfono no es válido.")]
         public string? PhoneNumber { get; set; }
 
         [MaxLength(255)]

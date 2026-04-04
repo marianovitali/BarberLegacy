@@ -4,15 +4,32 @@ using BarberLegacy.Api.Repositories.Implementations;
 using BarberLegacy.Api.Repositories.Interfaces;
 using BarberLegacy.Api.Services.Implementations;
 using BarberLegacy.Api.Services.Interfaces;
+using BarberLegacy.Api.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedOrigins")
+    .Get<string[]>()!;
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(optionsCORS =>
+    {
+        optionsCORS.WithOrigins(allowedOrigins)
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+    });
+});
 
 var licenseKey = builder.Configuration["AutoMapper:LicenseKey"];
 
@@ -68,13 +85,60 @@ builder.Services.AddScoped<IBarberScheduleService, BarberScheduleService>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 
+builder.Services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Barber Legacy API",
+        Version = "v1",
+        Description = "API para gestión de turnos y barberos."
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Pegue su token JWT aquí. No necesita escribir 'Bearer ', solo el código."
+    });
+
+    options.OperationFilter<FilterAuthorization>();
+
+    //options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecurityScheme
+    //        {
+    //            Reference = new OpenApiReference
+    //            {
+    //                Type = ReferenceType.SecurityScheme,
+    //                Id = "Bearer"
+    //            }
+    //        },
+    //        Array.Empty<string>()
+    //    }
+    //});
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 using (var scope = app.Services.CreateScope())
 {
@@ -82,10 +146,12 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapHealthChecks("/health");
 app.Run();

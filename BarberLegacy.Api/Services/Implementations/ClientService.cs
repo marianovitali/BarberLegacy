@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BarberLegacy.Api.DTOs.Client;
 using BarberLegacy.Api.Entities;
+using BarberLegacy.Api.Helpers;
 using BarberLegacy.Api.Repositories.Interfaces;
 using BarberLegacy.Api.Services.Interfaces;
 
@@ -43,11 +44,22 @@ namespace BarberLegacy.Api.Services.Implementations
             return true;
         }
 
-        public async Task<IEnumerable<ClientResponseDto>> GetAllAsync()
+        public async Task<PagedResponse<ClientResponseDto>> GetAllAsync(PaginationParams paginationParams)
         {
-            var clients = await _repository.GetAllAsync();
+            var (clients, totalCount) = await _repository.GetAllAsync(paginationParams.PageNumber, paginationParams.PageSize);
 
-            return _mapper.Map<IEnumerable<ClientResponseDto>>(clients);
+            var clientsDto = _mapper.Map<IEnumerable<ClientResponseDto>>(clients);
+
+            var totalPages = (int)Math.Ceiling(totalCount / (double)paginationParams.PageSize);
+
+            return new PagedResponse<ClientResponseDto>
+            {
+                TotalRecords = totalCount,
+                TotalPages = totalPages,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize,
+                Data = clientsDto
+            };
         }
 
         public async Task<ClientResponseDto?> GetByIdAsync(int id)

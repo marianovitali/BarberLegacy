@@ -27,6 +27,7 @@ namespace BarberLegacy.Api.Repositories.Implementations
             var barbers = await _context.Barbers
                 .Where(x => x.IsActive)
                 .Include(x => x.User)
+                .Include(x => x.BarberShop)
                 .ToListAsync();
 
             return barbers;
