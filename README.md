@@ -1,5 +1,4 @@
 # ✂️ BarberLegacy API - Sistema de Gestión de Barberías
->>>>>>> 4700406e76b6fc8986f49b85dae11fefd1f1b3f6
 
 ![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)
 ![C#](https://img.shields.io/badge/C%23-14.0-239120?logo=c-sharp&logoColor=white)
