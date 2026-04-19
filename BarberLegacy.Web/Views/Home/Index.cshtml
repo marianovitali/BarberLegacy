@@ -2,7 +2,502 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Barber Legacy</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-blue: #1173d4;
+            --bg-dark: #101922;
+            --bg-card: #192633;
+            --bg-nav: #111a22;
+            --accent-gold: #D4AF37;
+            --text-muted: #92adc9;
+            --border-color: #233648;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Navbar Customization */
+        .navbar {
+            background-color: var(--bg-nav);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 0;
+        }
+        .navbar-brand {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-link {
+            color: var(--text-muted) !important;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0 1rem;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary-blue) !important;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(16, 25, 34, 0.75), rgba(16, 25, 34, 0.95)),
+                        url("https://lh3.googleusercontent.com/aida-public/AB6AXuADnUa6wfz1mpFYpNpinQF9VEDiM807zxuYvOUuj8CzR-3ocmWPn_XkwXGWBxBRM-d5hk-PFqBMBWNx3CqW9vQnsOdYjn11ojtfw-n9lKr609NGAPNu8ZwtrxPA1P0JvP1xtRQB094jEhPzGPTCq0UcQWQqJU-zgg6z7ohadmEfvxUPn-RXWm34za0AX_WEW2nM9pOjduyleufTNYK4NuiCjXgFJNU76hqIwsW_nvlQvTsDf93YsIA7ihY70pJWPhUs_PAvn38wY7O9");
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+        .hero-subtitle {
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 1.5rem auto;
+            font-size: 1.1rem;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 80px 0;
+        }
+        .section-title {
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-left: 1rem;
+            border-left: 4px solid var(--accent-gold);
+        }
+        .section-title-centered {
+            text-align: center;
+            border-left: none;
+            padding-left: 0;
+        }
+        .section-title-centered::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--accent-gold);
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+
+        /* Service Cards */
+        .service-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .service-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+        .service-price {
+            color: var(--accent-gold);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        .service-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Barber Cards */
+        .barber-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .barber-card:hover {
+            transform: translateY(-5px);
+        }
+        .barber-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            border: 4px solid var(--border-color);
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, #101922 0%, #1a2b3c 100%);
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Map Placeholder */
+        .map-box {
+            height: 100%;
+            min-height: 350px;
+            background: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA5Tt95PpZK6dTBBtPNJHEX2wZx_ywTSGFYJYp3pjqFgy-s8iM3vCt3CK3f8_1RRkZ2FZd7u-b2lamUAkreXpG0AHBbDjQHgBswX7lDklzq5Et7BV557JOj537YCl6fQ4v2rRW6QHTnCiLnq8i0ElYZ5j7Uj97CFSraCpe9bNpOJbn-2FaQrLlIhIjaI6SI3d2R1vCJy7cw5SjCOnbpqpbNtbjMB6BgvCv3bNJPGwXdWl_o0UJxqMVV58vLK1a1ybOK8TqxM_Nn_JKg");
+            background-size: cover;
+            background-position: center;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .map-overlay {
+            background: rgba(16, 25, 34, 0.85);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Buttons */
+        .btn-primary-urban {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+            font-weight: 700;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-primary-urban:hover {
+            background-color: #0d61b3;
+            border-color: #0d61b3;
+            transform: scale(1.02);
+            color: white;
+        }
+        .btn-outline-urban {
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-weight: 700;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-outline-urban:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: white;
+            color: white;
+        }
+
+        /* Utils */
+        .text-gold { color: var(--accent-gold); }
+        .text-slate { color: var(--text-muted); }
+
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 0 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="material-symbols-outlined text-primary">content_cut</span>
+                Urban Cuts
+            </a>
+            <button class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                </ul>
+                <a class="btn btn-primary-urban" href="#">Book Appointment</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <header class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h1 class="hero-title">Precision Cuts for the <br /><span class="text-white-50">Modern Gentleman</span></h1>
+                    <p class="hero-subtitle">Experience the art of grooming in the heart of the city. Classic techniques meet modern style.</p>
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+                        <a class="btn btn-primary-urban btn-lg px-5" href="#">Book Your Seat</a>
+                        <a class="btn btn-outline-urban btn-lg px-5" href="#services">View Services</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Services Section -->
+    <section id="services">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="row g-4">
+                <!-- Service 1 -->
+                <div class="col-md-6">
+                    <div class="service-card h-100">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-5">
+                                <div class="service-img h-100" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCFNc2xNYBV5ZofNzEyEElDOyzxZP2cJdrZXvDU9USXfK6GpiF6_4SBgW7w1qc1jZTPNh-TCCa2AZn5gTmamkm0kI3hlHxvT5dyr644i85D0PTn0XK0ZBQ4c-hP9IJvbPaOjUBIfzVMKL9vVcMiNgxx4sUItWAXsr_ScX1hBRIK5Ej4acpXTdXa5eZIxLkp1ldF9WUz_u3XdITa6woQEjWKEaKPwQk_CcN44BQk-QK0GJb07vGgdfhFYjd0rIDKfcCscum2LZDg8cdx');"></div>
+                            </div>
+                            <div class="col-sm-7 p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0 fw-bold">The Classic Fade</h5>
+                                    <span class="service-price">$35</span>
+                                </div>
+                                <div class="service-meta">
+                                    <span class="material-symbols-outlined fs-6">schedule</span> 45 Mins
+                                </div>
+                                <p class="text-slate small mb-4">Clean, precise, and tailored to your head shape. Includes wash and style with premium pomade.</p>
+                                <a class="text-primary fw-bold text-decoration-none mt-auto" href="#">Book Now →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Service 2 -->
+                <div class="col-md-6">
+                    <div class="service-card h-100">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-5">
+                                <div class="service-img h-100" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBe5R5IUL7pQLcSn8GqtioFqydZ0Om7ZwK6JDSSWlcFZgAHMa_z1npqGpQ6bDcKBNVNUDww80_XZGkOoZn43KXj4pcTtjSThM645muGGe4r1wZfcJo1D8bucKH5chP-gHeJah50gUUzOX13FErF1bvFQGQb56DN7iQ95w6d3SZscDg81R-MiaD1ilaahL7r2L0euove7Ix5vRl7j-F7reNVm48ylmvzKUl-UKi6aki_U6_KCCzlT1sp4pTAbMWQaX9-TKhr9vpS0MIQ');"></div>
+                            </div>
+                            <div class="col-sm-7 p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0 fw-bold">Beard Sculpting</h5>
+                                    <span class="service-price">$25</span>
+                                </div>
+                                <div class="service-meta">
+                                    <span class="material-symbols-outlined fs-6">schedule</span> 30 Mins
+                                </div>
+                                <p class="text-slate small mb-4">Shape up your beard with razor sharp lines, trim, and hot towel treatment.</p>
+                                <a class="text-primary fw-bold text-decoration-none mt-auto" href="#">Book Now →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Service 3 -->
+                <div class="col-md-6">
+                    <div class="service-card h-100">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-5">
+                                <div class="service-img h-100" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB81wiWh0GQDw0jHpmJvGrByBMDeuLhOtFhRJULLprRgErqDRyO0i8IhKglKnoSng9BkGhDXF4VC4HZZdjvRqBtW6mYGx_KUbVqiLmPPH6o44auGa3Cz7Y0tYugrx7kjPON3LMyOq90czKHp4xu1H1jiGcqPkPGJT2e8hSKR9beEBtQ05Cp5Ms6nGiyUDGN4N_YKR1i4NZelVLAnlObdastKitrVFhHzb9s5tPheEYk9Rmpt-_upSm9IP-pXjQqWmB5jA8jrX60gCTp');"></div>
+                            </div>
+                            <div class="col-sm-7 p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0 fw-bold">Royal Shave</h5>
+                                    <span class="service-price">$45</span>
+                                </div>
+                                <div class="service-meta">
+                                    <span class="material-symbols-outlined fs-6">schedule</span> 60 Mins
+                                </div>
+                                <p class="text-slate small mb-4">Traditional straight razor shave with hot lather, oils, and a relaxing face massage.</p>
+                                <a class="text-primary fw-bold text-decoration-none mt-auto" href="#">Book Now →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Service 4 -->
+                <div class="col-md-6">
+                    <div class="service-card h-100">
+                        <div class="row g-0 h-100">
+                            <div class="col-sm-5">
+                                <div class="service-img h-100" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqd7mvRfDxOrTJucGDHIOPgnHn8GIRleYSOKA0lwwUVJWad9f4ZgBmfDaSTZXHdFqj4GBp5l1C0pLMDkg0hREpj7xe9UfOFkMXBGUfRp64JR3DOesXVW7U7UARjZrafG_-_uEbvacnetdeOyOJ43u4s24wLZ86leIyUql1NbCEvCDdl0WggBhUT6bmkk9cITyCEA_guFh2IMMkghc8EZkxRaFAy_T-BJXFVGgsMDKcYEBE9cMZtGaayKMH5VtBGcpGDkyw279HNG1F');"></div>
+                            </div>
+                            <div class="col-sm-7 p-4 d-flex flex-column">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h5 class="mb-0 fw-bold">The Executive</h5>
+                                    <span class="service-price">$75</span>
+                                </div>
+                                <div class="service-meta">
+                                    <span class="material-symbols-outlined fs-6">schedule</span> 90 Mins
+                                </div>
+                                <p class="text-slate small mb-4">Full service: Haircut, beard trim, facial scrub, and styling consultation.</p>
+                                <a class="text-primary fw-bold text-decoration-none mt-auto" href="#">Book Now →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Barbers Section -->
+    <section id="team">
+        <div class="container">
+            <h2 class="section-title section-title-centered">Meet The Masters</h2>
+            <div class="row g-4 mt-2">
+                <!-- Barber 1 -->
+                <div class="col-md-4">
+                    <div class="barber-card">
+                        <div class="barber-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuACuZ3F__eBh4p96NjEWui8WBJjnM81zNEwpbRLm7R7v2S55h7tJSyyXzJ6bTUSU0rVTCjFwksnyubL5DaAbJr6X0WQz1llrcwhMgpHeiGBife2g8CEcpeIOC0nl1kiiS0G1j7t-VoOza9R5Qc8hLDNjtupdKRNZj1EU4W54VKh55dA7yLqjqu48X9JO2aL9nBwr9N6LdLfmqVTQUYV4N2CaA819-weDnEwUVkPLapms7zKsvZhreVoC2jtBp7g6zrI7jx4i2XtimVK');"></div>
+                        <h5 class="fw-bold mb-1">Marcus Stone</h5>
+                        <p class="text-gold small fw-bold mb-2">Master Barber</p>
+                        <div class="text-gold mb-3">
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                        </div>
+                        <p class="text-slate small">Specializes in classic cuts and intricate fades. 10 years of experience.</p>
+                    </div>
+                </div>
+                <!-- Barber 2 -->
+                <div class="col-md-4">
+                    <div class="barber-card">
+                        <div class="barber-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuApvQpjVXKDhOw1Iw177R16I8WZsb65bmKsnJK9KUpC9FfkV1R6kcFpg9tTNllI8G1okgHMh0bIlF4ztHo1p5CTC0LxhDc7RdmpY28s5xszS-oSeePLTjeWAXFUBn2tdUcDDi6PTIFksLamnWEiD4pn0CjXpOHpb80gGfOO_vFsKyv1rZvT7WWEnJn3YfMMAXXBVfff-qaxeSHXmZ_Y_qr5ocBKsOotj8TolJTHVlYNJC8KCnbeBbR3o1VcFPnwJXa3mOYDLW-AC8ik');"></div>
+                        <h5 class="fw-bold mb-1">Sarah Jenkins</h5>
+                        <p class="text-gold small fw-bold mb-2">Senior Stylist</p>
+                        <div class="text-gold mb-3">
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6 text-white-50">star</span>
+                        </div>
+                        <p class="text-slate small">Expert in scissor cuts, texture, and modern styling trends.</p>
+                    </div>
+                </div>
+                <!-- Barber 3 -->
+                <div class="col-md-4">
+                    <div class="barber-card">
+                        <div class="barber-img" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAoALvUjE5lT6X4Io4wIsyjh8azIKhjCTrt3gf9sc9XsJ9sQ9U7c6T4OXSWXny7AbBy1WknppqDijwo1pchacYlMONcMiZKA6v_VExyr8ks7h98-Sw-Y_4mADxc1TCyEglkgnpYZd_XVq5_xVAwRwVxrVCw9HdvnrljXy-DI0neRev8h5CaOmzX2-4MgXT3HLuePDamqFDepawBDJhuCSXzO6gILZwHfMoHXLhxtMLIrj3A_j7Rhr-EpkTRg9i64xSN0buqWI-svv3e');"></div>
+                        <h5 class="fw-bold mb-1">Leo Rivera</h5>
+                        <p class="text-gold small fw-bold mb-2">Beard Specialist</p>
+                        <div class="text-gold mb-3">
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                            <span class="material-symbols-outlined fs-6">star</span>
+                        </div>
+                        <p class="text-slate small">The king of beard sculpting and traditional hot towel shaves.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- CTA Section -->
+    <section>
+        <div class="container">
+            <div class="cta-banner text-center">
+                <h2 class="fw-bold mb-3">Ready for your upgrade?</h2>
+                <p class="text-slate mx-auto mb-4" style="max-width: 600px;">Walk-ins are welcome, but appointments are highly recommended to secure your preferred slot and barber.</p>
+                <a class="btn btn-primary-urban btn-lg px-5" href="#">Book Now</a>
+            </div>
+        </div>
+    </section>
+    <!-- Contact & Hours -->
+    <footer id="contact">
+        <div class="container">
+            <div class="row g-5">
+                <!-- Left Info -->
+                <div class="col-lg-6">
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-primary fs-3">content_cut</span>
+                            <h3 class="fw-bold text-uppercase mb-0">Urban Cuts</h3>
+                        </div>
+                        <p class="text-slate" style="max-width: 400px;">The premier grooming destination in downtown. We combine traditional barbering with a modern, urban vibe.</p>
+                    </div>
+                    <div class="row g-4 mt-2">
+                        <div class="col-sm-6">
+                            <h6 class="fw-bold text-uppercase small mb-3">Visit Us</h6>
+                            <p class="text-slate small mb-0">123 Urban Avenue<br />Downtown District<br />New York, NY 10012</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6 class="fw-bold text-uppercase small mb-3">Opening Hours</h6>
+                            <p class="text-slate small mb-0">Mon - Fri: 9:00 AM - 8:00 PM<br />Saturday: 10:00 AM - 6:00 PM<br />Sunday: Closed</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6 class="fw-bold text-uppercase small mb-3">Contact</h6>
+                            <p class="text-slate small mb-0">(555) 123-4567<br />bookings@urbancuts.com</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Map Placeholder -->
+                <div class="col-lg-6">
+                    <div class="map-box">
+                        <div class="map-overlay text-center">
+                            <span class="material-symbols-outlined text-primary mb-1">location_on</span>
+                            <div class="fw-bold text-white small">Find us on Maps</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4" style="border-color: var(--border-color);" />
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="text-slate small mb-0">© 2023 Urban Cuts. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a class="text-slate mx-2" href="#"><span class="material-symbols-outlined fs-5">public</span></a>
+                    <a class="text-slate mx-2" href="#"><span class="material-symbols-outlined fs-5">share</span></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+@* <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+ *@

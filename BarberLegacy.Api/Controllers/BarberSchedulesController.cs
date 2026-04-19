@@ -18,7 +18,10 @@ namespace BarberLegacy.Api.Controllers
         {
             _barberScheduleService = barberScheduleService;
         }
+
         [HttpGet]
+        [EndpointSummary("Obtiene todos los horarios de barberos")]
+        [ProducesResponseType(typeof(IEnumerable<BarberScheduleResponseDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BarberScheduleResponseDto>>> GetAll()
         {
             var schedules = await _barberScheduleService.GetAllAsync();
@@ -26,6 +29,9 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [EndpointSummary("Obtiene un horario específico por ID")]
+        [ProducesResponseType(typeof(BarberScheduleResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BarberScheduleResponseDto>> GetById(int id)
         {
             var schedule = await _barberScheduleService.GetByIdAsync(id);
@@ -35,7 +41,10 @@ namespace BarberLegacy.Api.Controllers
             }
             return Ok(schedule);
         }
+
         [HttpGet("barber/{barberId:int}")]
+        [EndpointSummary("Obtiene todos los horarios de un barbero específico")]
+        [ProducesResponseType(typeof(IEnumerable<BarberScheduleResponseDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BarberScheduleResponseDto>>> GetByBarberId(int barberId)
         {
             var schedules = await _barberScheduleService.GetByBarberIdAsync(barberId);
@@ -44,15 +53,21 @@ namespace BarberLegacy.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Crea un nuevo horario para un barbero")]
+        [EndpointDescription("Solo administradores o barberos pueden crear horarios.")]
+        [ProducesResponseType(typeof(BarberScheduleResponseDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<BarberScheduleResponseDto>> Create([FromBody] BarberScheduleCreateDto schedule)
         {
             var createdSchedule = await _barberScheduleService.CreateAsync(schedule);
 
-            return CreatedAtAction(nameof(GetById), new { id = createdSchedule.Id}, createdSchedule);
+            return CreatedAtAction(nameof(GetById), new { id = createdSchedule.Id }, createdSchedule);
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Actualiza un horario existente")]
+        [ProducesResponseType(typeof(BarberScheduleResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BarberScheduleResponseDto>> Update([FromBody] BarberScheduleUpdateDto schedule, int id)
         {
             var updatedSchedule = await _barberScheduleService.UpdateAsync(id, schedule);
@@ -61,13 +76,16 @@ namespace BarberLegacy.Api.Controllers
             {
                 return NotFound(new { message = $"No se pudo actualizar. El horario con ID {id} no existe." });
             }
-            
+
             return Ok(updatedSchedule);
 
         }
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Elimina un horario existente")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             var delete = await _barberScheduleService.DeleteAsync(id);

@@ -17,6 +17,8 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpGet]
+        [EndpointSummary("Obtiene todas las barberías")]
+        [ProducesResponseType(typeof(IEnumerable<BarberShopResponseDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<BarberShopResponseDto>>> GetAll()
         {
             var barberShops = await _barberShopService.GetAllAsync();
@@ -24,6 +26,9 @@ namespace BarberLegacy.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [EndpointSummary("Obtiene una barbería específica por ID")]
+        [ProducesResponseType(typeof(BarberShopResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BarberShopResponseDto>> GetById(int id)
         {
             var barberShop = await _barberShopService.GetByIdAsync(id);
@@ -36,6 +41,9 @@ namespace BarberLegacy.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Crea una nueva barbería")]
+        [EndpointDescription("Solo administradores o barberos pueden crear barberías.")]
+        [ProducesResponseType(typeof(BarberShopResponseDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<BarberShopResponseDto>> Create([FromBody] BarberShopCreateDto barberShop)
         {
             var createdBarberShop = await _barberShopService.CreateAsync(barberShop);
@@ -45,6 +53,9 @@ namespace BarberLegacy.Api.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Actualiza una barbería existente")]
+        [ProducesResponseType(typeof(BarberShopResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<BarberShopResponseDto>> Update([FromBody] BarberShopUpdateDto barberShop, int id)
         {
             var updatedBarberShop = await _barberShopService.UpdateAsync(id, barberShop);
@@ -57,8 +68,12 @@ namespace BarberLegacy.Api.Controllers
             return Ok(updatedBarberShop);
 
         }
+
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin, Barber")]
+        [EndpointSummary("Elimina una barbería existente")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             var delete = await _barberShopService.DeleteAsync(id);

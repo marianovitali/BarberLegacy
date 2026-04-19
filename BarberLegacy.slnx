@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="BarberLegacy.Api/BarberLegacy.Api.csproj" />
+  <Project Path="BarberLegacy.Web/BarberLegacy.Web.csproj" Id="d3804f5d-ed4b-432a-a4c1-92c255eaf576" />
 </Solution>
