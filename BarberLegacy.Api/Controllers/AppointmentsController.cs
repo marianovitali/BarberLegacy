@@ -101,7 +101,7 @@ namespace BarberLegacy.Api.Controllers
                 return BadRequest("No se pudo agendar el turno. Revisá que el local esté abierto y que el horario no esté ocupado.");
             }
 
-            return Ok(appointment);
+            return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointment);
         }
 
         [Authorize(Roles = "Admin, Barber")]
@@ -142,16 +142,12 @@ namespace BarberLegacy.Api.Controllers
 
         private async Task<bool> IsUserOwnerOfClientAsync(int clientId)
         {
-            // 1. Sacamos el DNI del token del usuario que hizo la petición
             var loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Si por algún motivo no hay token (no debería pasar por el [Authorize], pero por las dudas)
             if (string.IsNullOrEmpty(loggedInUserId)) return false;
 
-            // 2. Buscamos el cliente en la base de datos
             var client = await _clientRepository.GetByIdAsync(clientId);
 
-            // 3. Devolvemos true si existe y si los IDs coinciden. Si no, false.
             return client != null && client.UserId == loggedInUserId;
         }
     }
