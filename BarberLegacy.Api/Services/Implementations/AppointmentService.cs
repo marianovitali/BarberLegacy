@@ -84,6 +84,7 @@ namespace BarberLegacy.Api.Services.Implementations
             return _mapper.Map<IEnumerable<AppointmentResponseDto>>(clientAppointment);
         }
 
+        // Generates available time slots based on barber schedule and existing appointments
         public async Task<IEnumerable<TimeSpan>> GetAvailableSlotsAsync(int barberId, DateTime date) //ACAA!!
         {
             var availableSlots = new List<TimeSpan>();
@@ -170,12 +171,16 @@ namespace BarberLegacy.Api.Services.Implementations
                 return false; // barbero no trabaja
             }
 
+            // Ensure the appointment is within the barber's working hours
             if (startTime < scheduleForDay.StartTime || endTime > scheduleForDay.EndTime)
             {
                 return false; // turno fuera horario
             }
 
             var existingAppointments = await _appointmentRepository.GetAllBarberAppointmentsByDateAsync(barberId, date);
+
+
+            // Check if the new appointment overlaps with any existing appointment
 
             bool hasOverlap = existingAppointments.Any(a =>
                 a.Id != appointmentIdToIgnore && 
@@ -198,6 +203,8 @@ namespace BarberLegacy.Api.Services.Implementations
                 a.Date >= DateTime.Today &&
                 (a.Status == AppointmentStatus.Pending || a.Status == AppointmentStatus.Confirmed) &&
                 a.IsActive);
+
+            // Business rule: a client can have a maximum of 3 active future appointments
 
             return activeFutureAppointments < 3; 
         }

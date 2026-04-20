@@ -18,7 +18,6 @@ namespace BarberLegacy.Api.Services.Implementations
             _repository = repository;
             _mapper = mapper;
             _userManager = userManager;
-            _userManager = userManager;
         }
 
         public async Task<BarberResponseDto> CreateAsync(BarberCreateDto dto)
@@ -30,6 +29,7 @@ namespace BarberLegacy.Api.Services.Implementations
                 throw new Exception("El usuario no existe en el sistema.");
             }
 
+            // When a user becomes a barber, update their role accordingly
             await _userManager.RemoveFromRoleAsync(user, "Client");
             await _userManager.AddToRoleAsync(user, "Barber");
 

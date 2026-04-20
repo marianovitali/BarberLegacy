@@ -28,6 +28,8 @@ namespace BarberLegacy.Api.Services.Implementations
 
         public async Task<IdentityResult> RegisterAsync(RegisterDto dto)
         {
+            // Ensure user and client are created atomically (both succeed or both fail)
+
             using var transaction = await _context.Database.BeginTransactionAsync();
 
             try
@@ -90,6 +92,7 @@ namespace BarberLegacy.Api.Services.Implementations
 
         private async Task<string> GenerateJwtToken(User user, DateTime expiration)
         {
+            // Base claims included in JWT token
             var claims = new List<Claim>
             {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id), 
