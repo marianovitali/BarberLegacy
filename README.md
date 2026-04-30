@@ -11,14 +11,14 @@ API RESTful para la gestión completa de barberías: turnos, barberos, clientes 
 
 ## ✨ Funcionalidades
 
-- 🔐 **Autenticación JWT** con ASP.NET Core Identity
-- 📅 **Gestión de Turnos** - CRUD completo con validaciones de disponibilidad
-- 💈 **Administración de Barberos** - Perfiles, horarios y especialidades
-- 👥 **Gestión de Clientes** - Registro y seguimiento de historial
-- 🏪 **Multi-barbería** - Soporte para múltiples sucursales
-- 📋 **Servicios** - Catálogo de cortes y tratamientos con precios
-- 🔒 **Autorización basada en roles** - Client/Admin
-- 📖 **Documentación Swagger** - Pruebas interactivas de todos los endpoints
+-  **Autenticación JWT** con ASP.NET Core Identity
+-  **Gestión de Turnos** - CRUD completo con validaciones de disponibilidad
+-  **Administración de Barberos** - Perfiles, horarios y especialidades
+-  **Gestión de Clientes** - Registro y seguimiento de historial
+-  **Multi-barbería** - Soporte para múltiples sucursales
+-  **Servicios** - Catálogo de cortes y tratamientos con precios
+-  **Autorización basada en roles** - Client/Admin
+-  **Documentación Swagger** - Pruebas interactivas de todos los endpoints
 
 ## 🏗️ Arquitectura
 
