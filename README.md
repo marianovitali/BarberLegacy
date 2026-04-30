@@ -9,7 +9,7 @@ API RESTful para la gestión completa de barberías: turnos, barberos, clientes 
 
 > **🚧 En desarrollo:** Frontend MVC en construcción. Actualmente disponible solo API con documentación Swagger interactiva.
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 -  **Autenticación JWT** con ASP.NET Core Identity
 -  **Gestión de Turnos** - CRUD completo con validaciones de disponibilidad
@@ -20,7 +20,7 @@ API RESTful para la gestión completa de barberías: turnos, barberos, clientes 
 -  **Autorización basada en roles** - Client/Admin
 -  **Documentación Swagger** - Pruebas interactivas de todos los endpoints
 
-## 🏗️ Arquitectura
+##  Arquitectura
 
 **Backend:** .NET 10 • ASP.NET Core Web API • Entity Framework Core  
 **Seguridad:** JWT • ASP.NET Identity • Authorization Policies  
@@ -39,7 +39,7 @@ API RESTful para la gestión completa de barberías: turnos, barberos, clientes 
 └────────────────────────────────┘
 ```
 
-## 🚀 Instalación y Pruebas
+##  Instalación y Pruebas
 
 ```bash
 # 1. Clonar repositorio
@@ -63,7 +63,7 @@ dotnet run
 
 **Requisitos:** .NET 10 SDK • SQL Server 2019+ 
 
-## 📡 Endpoints Principales
+##  Endpoints Principales
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
@@ -77,7 +77,7 @@ dotnet run
 
 **📖 Documentación completa:** Disponible en `/swagger` al ejecutar la API.
 
-## 🛠️ Características Técnicas
+## Características Técnicas
 
 - ✅ **ASP.NET Core Identity** - Sistema completo de usuarios, roles y claims
 - ✅ **Autenticación JWT** - Tokens con validación de issuer, audience y lifetime
@@ -92,7 +92,7 @@ dotnet run
 - ✅ **CORS configurado** - Preparado para integración con frontend
 - ✅ **Health Checks** - Endpoint de monitoreo de base de datos
 
-## 👨‍💻 Autor
+##  Autor
 
 **Mariano Vitali** - Desarrollador .NET
 
@@ -102,4 +102,4 @@ dotnet run
 
 ---
 
-⭐ **Demo interactiva disponible en Swagger** - Todos los endpoints pueden probarse sin necesidad de frontend.
+ **Demo interactiva disponible en Swagger** - Todos los endpoints pueden probarse sin necesidad de frontend.
